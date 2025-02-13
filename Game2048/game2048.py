@@ -18,7 +18,7 @@ class Cal():
                               (253, 187, 45), (62, 172, 174),
                               (143, 40, 127), (245, 114, 63), (79, 137, 29)]
         self.padding = 8
-        self.border_radius = 2
+        self.border_radius = 8
         self.score = score
 
         self.points = [(x, y) for x in range(4) for y in range(4)]
@@ -72,7 +72,6 @@ class Cal():
         self.board = np.rot90(self.board, direction)
         self.spawn()
         self.score.update_count(self.board.sum())
-        print(self.board)
 
     def draw(self, screen):
         for idx, ele in enumerate(self.board.flatten()):
@@ -130,6 +129,11 @@ def main():
     game_screen = pygame.surface.Surface((580, 580))
     game_screen.fill((255, 255, 255))
 
+    # interactive button
+    button = pygame.Rect(370, 60, 150, 40)
+    button_color = (128, 118, 97)
+    button_font = pygame.font.SysFont("Comic Sans", 20)
+
     font = pygame.font.Font(None, 55)
     score = Score(370, 20)
     cal = Cal(score)
@@ -138,6 +142,7 @@ def main():
         screen.fill((255, 233, 179))
         screen.blit(game_screen, (10, 110))
         clock.tick(TICK)
+        mouse_pos = pygame.mouse.get_pos()
 
         # text on screen
         text = font.render("2048", True, (77, 61, 24))
@@ -146,7 +151,18 @@ def main():
         # score on screen
         score.draw(screen)
 
+        # board on screen
         cal.draw(screen)
+
+        # button on screen
+        if button.collidepoint(mouse_pos):
+            button_color = (87, 80, 77)
+        else:
+            button_color = (128, 118, 97)
+        pygame.draw.rect(screen, button_color, button, border_radius=10)
+        button_text = button_font.render("Reset", True, (242, 236, 223))
+        button_rect = button_text.get_rect(center=button.center)
+        screen.blit(button_text, button_rect)
 
         pygame.display.update()
         time.sleep(0.1)
@@ -164,6 +180,9 @@ def main():
                 elif event.key == K_DOWN:
                     cal.update(3)
                 sound_move.play()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if button.collidepoint(event.pos):
+                    cal.reset()
 
 
 if __name__ == "__main__":
