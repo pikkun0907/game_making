@@ -96,6 +96,8 @@ class Cal():
         init_loc = [self.points[i] for i in selected_points]
         for loc in init_loc:
             self.board[loc] = np.random.choice([2, 4])
+        reset_sound = pygame.mixer.Sound('Game2048/sound/reset.mp3')
+        reset_sound.play()
 
 
 class Score():
@@ -120,6 +122,10 @@ def main():
     clock = pygame.time.Clock()
     screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.display.set_caption("2048")
+
+    # sound
+    pygame.mixer.init()
+    sound_move = pygame.mixer.Sound("Game2048/sound/move.mp3")
 
     game_screen = pygame.surface.Surface((580, 580))
     game_screen.fill((255, 255, 255))
@@ -157,6 +163,7 @@ def main():
                     cal.update(1)
                 elif event.key == K_DOWN:
                     cal.update(3)
+                sound_move.play()
 
 
 if __name__ == "__main__":
